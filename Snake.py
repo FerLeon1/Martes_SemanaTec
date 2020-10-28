@@ -7,7 +7,6 @@ food = vector(0, 0)
 snake = [vector(10, 0)]
 aim = vector(0, -10)
 
-
 def change(x, y):
     "Change snake direction."
     aim.x = x
@@ -17,7 +16,11 @@ def inside(head):
     "Return True if head inside boundaries."
     return -200 < head.x < 190 and -200 < head.y < 190
 
-def move():
+def insideFood(food):
+    "Return True if food inside boundaries."
+    return -150 < food.x < 150 and -150 < food.y < 150
+
+def moveSnake():
     "Move snake forward one segment."
     head = snake[-1].copy()
     head.move(aim)
@@ -43,16 +46,29 @@ def move():
 
     square(food.x, food.y, 9, colf)
     update()
-    ontimer(move, 100)
+    ontimer(moveSnake, 100)
 
-setup(420, 420, 370, 0)
+def moveFood():
+    "Move food randomly, always to one adjacent square"
+    aimFood = vector(randrange(-10, 11, 10), randrange(-10, 11, 10))
+    print(aimFood)
+    print(food.x, food.y)
+    food.move(aimFood)
+    ontimer(moveFood, 500)
 
-coloresjuego= ['green', 'blue','yellow', 'purple', 'black']
-colb= random.choice(coloresjuego)
-colf= random.choice(coloresjuego)
-while colb==colf:
-    colf= random.choice(coloresjuego)
+    if not insideFood(food):
+        food.x = randrange(-15, 15) * 10
+        food.y = randrange(-15, 15) * 10
 
+setup(420, 420, 300, 0)
+coloresjuego = ['green', 'blue', 'yellow', 'purple', 'black']
+colb = random.choice(coloresjuego)
+print(colb)
+colf = random.choice(coloresjuego)
+print(colf)
+while colb == colf:
+    colf = random.choice(coloresjuego)
+    print(colf)
 
 hideturtle()
 tracer(False)
@@ -61,5 +77,6 @@ onkey(lambda: change(10, 0), 'Right')
 onkey(lambda: change(-10, 0), 'Left')
 onkey(lambda: change(0, 10), 'Up')
 onkey(lambda: change(0, -10), 'Down')
-move()
+moveSnake()
+moveFood()
 done()
